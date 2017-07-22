@@ -201,28 +201,49 @@ dicepool.create_window(50 + 3 * 90 , 50, window = dbag.die4 , width = 78, height
 dicepool.create_window(50 + 4 * 90 , 50, window = dbag.die5 , width = 78, height = 78)
 
 # ADD A METHOD THAT SETS THE DICE TEXT VARIABLES
-def set_dice_views():
-    dbag.d1tv.set(str(dbag.get_face(0)))
-    dbag.d2tv.set(str(dbag.get_face(1)))
-    dbag.d3tv.set(str(dbag.get_face(2)))
-    dbag.d4tv.set(str(dbag.get_face(3)))
-    dbag.d5tv.set(str(dbag.get_face(4)))
-
-set_dice_views()
+#def set_dice_views():
+#    dbag.d1tv.set(str(dbag.get_face(0)))
+#    dbag.d2tv.set(str(dbag.get_face(1)))
+#    dbag.d3tv.set(str(dbag.get_face(2)))
+#    dbag.d4tv.set(str(dbag.get_face(3)))
+#    dbag.d5tv.set(str(dbag.get_face(4)))
+#
+#set_dice_views()
 
 def roll_die():
-    return random.randint(1,5)
+    return random.randint(1,6)
 
-def roll_dice(*args):
+def roll_dice(array):
     results = []
-    for die in args:
-        if die != False:
+    for die in array:
+        if die == False:
             results.append(roll_die())
         else:
             results.append("locked")
+
+    if results[0] != 'locked':
+        dbag.d1tv.set(str(dbag.get_face(results[0])))
+
+    if results[1] != 'locked':
+        dbag.d2tv.set(str(dbag.get_face(results[1])))
+
+    if results[2] != 'locked':
+        dbag.d3tv.set(str(dbag.get_face(results[2])))
+
+    if results[3] != 'locked':
+        dbag.d4tv.set(str(dbag.get_face(results[3])))
+
+    if results[4] != 'locked':
+        dbag.d5tv.set(str(dbag.get_face(results[4])))
+
     print(results)
 
-roll_dice(dbag.get_locks())
+
+b3 = Button(dicepool, text="ROLL DICE", command = lambda: roll_dice(dbag.get_locks()))
+b3.pack()
+dicepool.create_window(710, 20, window = b3, width = 100, height = 20)
+
+#roll_dice(dbag.get_locks())
 
 
 # MAKE THE MAGIC HAPPEN!
