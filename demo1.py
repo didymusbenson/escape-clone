@@ -1,4 +1,5 @@
 from tkinter import *
+import random
 
 # Define window dimensions
 canvas_width = 800
@@ -55,31 +56,7 @@ w.create_window(270, 60, window = gemView, width = 100, height = 100)
 # Set the label to the current amount of gems
 gViewTV.set(str(gPool.get_gems()))
 
-# CREATE A MESSAGE LABEL AND ADD TO CANVAS
-message = Label( w, text = "MESSAGE" )
-message.pack()
-w.create_window(560, 60, window = message, width = 460, height = 100)
 
-# CREATE A DICE POOL LABEL AND ADD TO CANVAS
-dicepool = Canvas( w )
-dicepool.pack()
-w.create_window(400, 580, window = dicepool, width = 780, height = 100)
-
-############################################################################
-# DYNAMICALLY CREATE "DIE" ELEMENTS THIS IS NOT WHAT WILL NEED TO BE DONE
-# IN THE FINAL VERSION OF THE GAME, BUT IT'S A STEP IN THE RIGHT DIRECTION
-# REGARDING THE LOGIC.
-
-# This will be an array of "Die" objects, which is why I'm not doing
-# "For i in range(5)
-dice = [1,2,3,4,5]
-i = 0
-for die in dice:
-    lb = Label(dicepool, text = "DIE", borderwidth=2 , relief="solid")
-    lb.pack()
-    lb.configure(background='#FFFF7F')
-    dicepool.create_window(50 + i * 90 , 50, window = lb, width = 78, height = 78)
-    i += 1
 
 ##############################################################
 # CREATE A TEST BUTTON THAT WILL REMOVE GEMS FROM THE GEM POOL
@@ -108,6 +85,145 @@ def add_gem():
 b2 = Button(w, text="ADD BATTERY", command=add_gem)
 b2.pack()
 w.create_window(270, 160, window = b2, width = 100, height = 20)
+
+##########################################
+# CREATE A MESSAGE LABEL AND ADD TO CANVAS
+message = Label( w, text = "MESSAGE" )
+message.pack()
+w.create_window(560, 60, window = message, width = 460, height = 100)
+
+# CREATE A DICE POOL LABEL AND ADD TO CANVAS
+dicepool = Canvas( w )
+dicepool.pack()
+w.create_window(400, 580, window = dicepool, width = 780, height = 100)
+
+############################################################################
+# DYNAMICALLY CREATE "DIE" ELEMENTS THIS IS NOT WHAT WILL NEED TO BE DONE
+# IN THE FINAL VERSION OF THE GAME, BUT IT'S A STEP IN THE RIGHT DIRECTION
+# REGARDING THE LOGIC.
+
+# This will be an array of "Die" objects, which is why I'm not doing
+# "For i in range(5)
+
+class dice_bag(object):
+    faces = ["Roll me!","Yellow","Red","Green","Green","Blue","Black"]
+
+    def get_face(self, num):
+        try:
+            return self.faces[num]
+        except:
+            print('Error getting die face.')
+
+    d1tv = StringVar()
+    d2tv = StringVar()
+    d3tv = StringVar()
+    d4tv = StringVar()
+    d5tv = StringVar()
+
+    die1 = Label(dicepool, textvariable = d1tv, borderwidth=2 , relief="solid")
+    die1.pack()
+    die1.configure(background='#FFFFFF')
+
+    die2 = Label(dicepool, textvariable = d2tv, borderwidth=2 , relief="solid")
+    die2.pack()
+    die2.configure(background='#FFFFFF')
+
+    die3 = Label(dicepool, textvariable = d3tv, borderwidth=2 , relief="solid")
+    die3.pack()
+    die3.configure(background='#FFFFFF')
+
+    die4 = Label(dicepool, textvariable = d4tv, borderwidth=2 , relief="solid")
+    die4.pack()
+    die4.configure(background='#FFFFFF')
+
+    die5 = Label(dicepool, textvariable = d5tv, borderwidth=2 , relief="solid")
+    die5.pack()
+    die5.configure(background='#FFFFFF')
+
+    # ffff7f = yellow
+    d1tv.set("Roll me!")
+    d2tv.set("Roll me!")
+    d3tv.set("Roll me!")
+    d4tv.set("Roll me!")
+    d5tv.set("Roll me!")
+
+    d1lock = False
+    d2lock = False
+    d3lock = False
+    d4lock = False
+    d5lock = False
+
+    d1roll = 0
+    d2roll = 0
+    d3roll = 0
+    d4roll = 0
+    d5roll = 0
+
+    def get_locks(self):
+        return [self.d1lock, self.d2lock, self.d3lock, self.d4lock, self.d5lock]
+
+
+
+    def get_d_roll(self, dnum):
+        if dnum == 1:
+            return self.d1roll
+        elif dnum == 2:
+            return self.d2roll
+        elif dnum == 3:
+            return self.d3roll
+        elif dnum == 4:
+            return self.d4roll
+        elif dnum == 5:
+            return self.d5roll
+        else:
+            print("Error getting die roll!")
+
+    def set_d_roll(self, dnum, roll):
+        if dnum == 1:
+            self.d1roll = roll
+        elif dnum == 2:
+            self.d2roll = roll
+        elif dnum == 3:
+            self.d3roll = roll
+        elif dnum == 4:
+            self.d4roll = roll
+        elif dnum == 5:
+            self.d5roll = roll
+        else:
+            print("Error setting die roll!")
+
+dbag = dice_bag()
+
+dicepool.create_window(50 + 0 * 90 , 50, window = dbag.die1 , width = 78, height = 78)
+dicepool.create_window(50 + 1 * 90 , 50, window = dbag.die2 , width = 78, height = 78)
+dicepool.create_window(50 + 2 * 90 , 50, window = dbag.die3 , width = 78, height = 78)
+dicepool.create_window(50 + 3 * 90 , 50, window = dbag.die4 , width = 78, height = 78)
+dicepool.create_window(50 + 4 * 90 , 50, window = dbag.die5 , width = 78, height = 78)
+
+# ADD A METHOD THAT SETS THE DICE TEXT VARIABLES
+def set_dice_views():
+    dbag.d1tv.set(str(dbag.get_face(0)))
+    dbag.d2tv.set(str(dbag.get_face(1)))
+    dbag.d3tv.set(str(dbag.get_face(2)))
+    dbag.d4tv.set(str(dbag.get_face(3)))
+    dbag.d5tv.set(str(dbag.get_face(4)))
+
+set_dice_views()
+
+def roll_die():
+    return random.randint(1,5)
+
+def roll_dice(*args):
+    results = []
+    for die in args:
+        if die != False:
+            results.append(roll_die())
+        else:
+            results.append("locked")
+    print(results)
+
+roll_dice(dbag.get_locks())
+
 
 # MAKE THE MAGIC HAPPEN!
 mainloop()
