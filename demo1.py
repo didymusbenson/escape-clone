@@ -97,6 +97,41 @@ dicepool = Canvas( w )
 dicepool.pack()
 w.create_window(400, 580, window = dicepool, width = 780, height = 100)
 
+# declare die textvariables
+d1tv = StringVar()
+d2tv = StringVar()
+d3tv = StringVar()
+d4tv = StringVar()
+d5tv = StringVar()
+# dice labels
+die1 = Label(dicepool, textvariable = d1tv, borderwidth=2 , relief="solid")
+die1.pack()
+die1.configure(background='#FFFFFF')
+die2 = Label(dicepool, textvariable = d2tv, borderwidth=2 , relief="solid")
+die2.pack()
+die2.configure(background='#FFFFFF')
+die3 = Label(dicepool, textvariable = d3tv, borderwidth=2 , relief="solid")
+die3.pack()
+die3.configure(background='#FFFFFF')
+die4 = Label(dicepool, textvariable = d4tv, borderwidth=2 , relief="solid")
+die4.pack()
+die4.configure(background='#FFFFFF')
+die5 = Label(dicepool, textvariable = d5tv, borderwidth=2 , relief="solid")
+die5.pack()
+die5.configure(background='#FFFFFF')
+# ffff7f = yellow
+d1tv.set("Roll me!")
+d2tv.set("Roll me!")
+d3tv.set("Roll me!")
+d4tv.set("Roll me!")
+d5tv.set("Roll me!")
+
+dicepool.create_window(50 + 0 * 90 , 50, window = die1 , width = 78, height = 78)
+dicepool.create_window(50 + 1 * 90 , 50, window = die2 , width = 78, height = 78)
+dicepool.create_window(50 + 2 * 90 , 50, window = die3 , width = 78, height = 78)
+dicepool.create_window(50 + 3 * 90 , 50, window = die4 , width = 78, height = 78)
+dicepool.create_window(50 + 4 * 90 , 50, window = die5 , width = 78, height = 78)
+
 ############################################################################
 # DYNAMICALLY CREATE "DIE" ELEMENTS THIS IS NOT WHAT WILL NEED TO BE DONE
 # IN THE FINAL VERSION OF THE GAME, BUT IT'S A STEP IN THE RIGHT DIRECTION
@@ -107,45 +142,13 @@ w.create_window(400, 580, window = dicepool, width = 780, height = 100)
 
 class dice_bag(object):
     faces = ["Roll me!","Yellow","Red","Green","Green","Blue","Black"]
+    face_colors = ["#ffffff","#ffff7f","#ff0000","#00ff00","#00ff00","#0000ff","#000000"]
 
     def get_face(self, num):
         try:
             return self.faces[num]
         except:
             print('Error getting die face.')
-
-    d1tv = StringVar()
-    d2tv = StringVar()
-    d3tv = StringVar()
-    d4tv = StringVar()
-    d5tv = StringVar()
-
-    die1 = Label(dicepool, textvariable = d1tv, borderwidth=2 , relief="solid")
-    die1.pack()
-    die1.configure(background='#FFFFFF')
-
-    die2 = Label(dicepool, textvariable = d2tv, borderwidth=2 , relief="solid")
-    die2.pack()
-    die2.configure(background='#FFFFFF')
-
-    die3 = Label(dicepool, textvariable = d3tv, borderwidth=2 , relief="solid")
-    die3.pack()
-    die3.configure(background='#FFFFFF')
-
-    die4 = Label(dicepool, textvariable = d4tv, borderwidth=2 , relief="solid")
-    die4.pack()
-    die4.configure(background='#FFFFFF')
-
-    die5 = Label(dicepool, textvariable = d5tv, borderwidth=2 , relief="solid")
-    die5.pack()
-    die5.configure(background='#FFFFFF')
-
-    # ffff7f = yellow
-    d1tv.set("Roll me!")
-    d2tv.set("Roll me!")
-    d3tv.set("Roll me!")
-    d4tv.set("Roll me!")
-    d5tv.set("Roll me!")
 
     d1lock = False
     d2lock = False
@@ -162,7 +165,19 @@ class dice_bag(object):
     def get_locks(self):
         return [self.d1lock, self.d2lock, self.d3lock, self.d4lock, self.d5lock]
 
-
+    def set_locks(self, dnum, tf_bool):
+        if dnum == 1:
+            self.d1lock = tf_bool
+        elif dnum == 2:
+            self.d2lock = tf_bool
+        elif dnum == 3:
+            self.d3lock = tf_bool
+        elif dnum == 4:
+            self.d4lock = tf_bool
+        elif dnum == 5:
+            self.d5lock = tf_bool
+        else:
+            print("Error setting die locks!")
 
     def get_d_roll(self, dnum):
         if dnum == 1:
@@ -194,52 +209,65 @@ class dice_bag(object):
 
 dbag = dice_bag()
 
-dicepool.create_window(50 + 0 * 90 , 50, window = dbag.die1 , width = 78, height = 78)
-dicepool.create_window(50 + 1 * 90 , 50, window = dbag.die2 , width = 78, height = 78)
-dicepool.create_window(50 + 2 * 90 , 50, window = dbag.die3 , width = 78, height = 78)
-dicepool.create_window(50 + 3 * 90 , 50, window = dbag.die4 , width = 78, height = 78)
-dicepool.create_window(50 + 4 * 90 , 50, window = dbag.die5 , width = 78, height = 78)
-
-# ADD A METHOD THAT SETS THE DICE TEXT VARIABLES
-#def set_dice_views():
-#    dbag.d1tv.set(str(dbag.get_face(0)))
-#    dbag.d2tv.set(str(dbag.get_face(1)))
-#    dbag.d3tv.set(str(dbag.get_face(2)))
-#    dbag.d4tv.set(str(dbag.get_face(3)))
-#    dbag.d5tv.set(str(dbag.get_face(4)))
-#
-#set_dice_views()
 
 def roll_die():
     return random.randint(1,6)
 
-def roll_dice(array):
+def roll_dice():
     results = []
-    for die in array:
+    for die in dbag.get_locks():
         if die == False:
             results.append(roll_die())
         else:
-            results.append("locked")
+            results.append(6)
 
-    if results[0] != 'locked':
-        dbag.d1tv.set(str(dbag.get_face(results[0])))
 
-    if results[1] != 'locked':
-        dbag.d2tv.set(str(dbag.get_face(results[1])))
+    if results[0] !=  6:
+        d1tv.set(str(dbag.get_face(results[0])))
+        die1.configure(background=dbag.face_colors[results[0]])
+    else:
+        d1tv.set(str(dbag.get_face(results[0])))
+        die1.configure(background=dbag.face_colors[results[0]])
+        dbag.set_locks(1, True)
 
-    if results[2] != 'locked':
-        dbag.d3tv.set(str(dbag.get_face(results[2])))
+    if results[1] !=  6:
+        d2tv.set(str(dbag.get_face(results[1])))
+        die2.configure(background=dbag.face_colors[results[1]])
+    else:
+        d2tv.set(str(dbag.get_face(results[0])))
+        die2.configure(background=dbag.face_colors[results[0]])
+        dbag.set_locks(2, True)
 
-    if results[3] != 'locked':
-        dbag.d4tv.set(str(dbag.get_face(results[3])))
+    if results[2] !=  6:
+        d3tv.set(str(dbag.get_face(results[2])))
+        die3.configure(background=dbag.face_colors[results[2]])
+    else:
+        d3tv.set(str(dbag.get_face(results[0])))
+        die3.configure(background=dbag.face_colors[results[0]])
+        dbag.set_locks(3, True)
 
-    if results[4] != 'locked':
-        dbag.d5tv.set(str(dbag.get_face(results[4])))
+    if results[3] !=  6:
+        d4tv.set(str(dbag.get_face(results[3])))
+        die4.configure(background=dbag.face_colors[results[3]])
+    else:
+        d4tv.set(str(dbag.get_face(results[0])))
+        die4.configure(background=dbag.face_colors[results[0]])
+        dbag.set_locks(4, True)
 
+    if results[4] !=  6:
+        d5tv.set(str(dbag.get_face(results[4])))
+        die5.configure(background=dbag.face_colors[results[4]])
+    else:
+        d5tv.set(str(dbag.get_face(results[0])))
+        die5.configure(background=dbag.face_colors[results[0]])
+        dbag.set_locks(5, True)
+
+    print(dbag.get_locks())
     print(results)
 
 
-b3 = Button(dicepool, text="ROLL DICE", command = lambda: roll_dice(dbag.get_locks()))
+
+b3 = Button(dicepool, text="ROLL DICE", command = roll_dice)
 b3.pack()
 dicepool.create_window(710, 20, window = b3, width = 100, height = 20)
 
