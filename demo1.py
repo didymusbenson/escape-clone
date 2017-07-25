@@ -179,16 +179,19 @@ class dice_bag(object):
         else:
             print("Error setting die locks!")
 
+    def get_rolls(self):
+        return [self.d1roll, self.d2roll, self.d3roll, self.d4roll, self.d5roll]
+
     def get_d_roll(self, dnum):
-        if dnum == 1:
+        if dnum == 0:
             return self.d1roll
-        elif dnum == 2:
+        elif dnum == 1:
             return self.d2roll
-        elif dnum == 3:
+        elif dnum == 2:
             return self.d3roll
-        elif dnum == 4:
+        elif dnum == 3:
             return self.d4roll
-        elif dnum == 5:
+        elif dnum == 4:
             return self.d5roll
         else:
             print("Error getting die roll!")
@@ -209,58 +212,94 @@ class dice_bag(object):
 
 dbag = dice_bag()
 
+def unlock_sixes(n):
+    locklist = dbag.get_locks()
+    rolls = dbag.get_rolls()
+    unlocked = 0
+    for i in range(len(locklist)):
+        if (locklist[i] == True and rolls[i] == 6 and unlocked < n):
+            rolls[i] = 0
+            locklist[i] = False
+            unlocked += 1
+
+    if locklist[0] == False:
+        dbag.set_locks(1, False)
+        die1.config(highlightbackground="#000000")
+    if locklist[1] == False:
+        dbag.set_locks(2, False)
+        die2.config(highlightbackground="#000000")
+    if locklist[2] == False:
+        dbag.set_locks(3, False)
+        die3.config(highlightbackground="#000000")
+    if locklist[3] == False:
+        dbag.set_locks(4, False)
+        die4.config(highlightbackground="#000000")
+    if locklist[4] == False:
+        dbag.set_locks(5, False)
+        die5.config(highlightbackground="#000000")
+
 
 def roll_die():
     return random.randint(1,6)
 
 def roll_dice():
     results = []
-    for die in dbag.get_locks():
-        if die == False:
+    for die in range(len(dbag.get_locks())):
+        locklist = dbag.get_locks()
+        if locklist[die] == False:
             results.append(roll_die())
         else:
-            results.append(6)
+            results.append(dbag.get_d_roll(die))
 
+    d1tv.set(str(dbag.get_face(results[0])))
+    dbag.set_d_roll(1, results[0])
+    die1.configure(background=dbag.face_colors[results[0]])
+    d2tv.set(str(dbag.get_face(results[1])))
+    dbag.set_d_roll(2, results[1])
+    die2.configure(background=dbag.face_colors[results[1]])
+    d3tv.set(str(dbag.get_face(results[2])))
+    dbag.set_d_roll(3, results[2])
+    die3.configure(background=dbag.face_colors[results[2]])
+    d4tv.set(str(dbag.get_face(results[3])))
+    dbag.set_d_roll(4, results[3])
+    die4.configure(background=dbag.face_colors[results[3]])
+    d5tv.set(str(dbag.get_face(results[4])))
+    dbag.set_d_roll(5, results[4])
+    die5.configure(background=dbag.face_colors[results[4]])
 
-    if results[0] !=  6:
-        d1tv.set(str(dbag.get_face(results[0])))
-        die1.configure(background=dbag.face_colors[results[0]])
-    else:
-        d1tv.set(str(dbag.get_face(results[0])))
-        die1.configure(background=dbag.face_colors[results[0]])
+    num_to_unlock = 0
+
+    if results[0] ==  6:
         dbag.set_locks(1, True)
+        die1.config(highlightbackground="#FF0000")
+    elif results[0] == 1:
+        num_to_unlock += 2
 
-    if results[1] !=  6:
-        d2tv.set(str(dbag.get_face(results[1])))
-        die2.configure(background=dbag.face_colors[results[1]])
-    else:
-        d2tv.set(str(dbag.get_face(results[0])))
-        die2.configure(background=dbag.face_colors[results[0]])
+    if results[1] ==  6:
         dbag.set_locks(2, True)
+        die2.config(highlightbackground="#FF0000")
+    elif results[1] == 1:
+        num_to_unlock += 2
 
-    if results[2] !=  6:
-        d3tv.set(str(dbag.get_face(results[2])))
-        die3.configure(background=dbag.face_colors[results[2]])
-    else:
-        d3tv.set(str(dbag.get_face(results[0])))
-        die3.configure(background=dbag.face_colors[results[0]])
+    if results[2] ==  6:
         dbag.set_locks(3, True)
+        die3.config(highlightbackground="#FF0000")
+    elif results[2] == 1:
+        num_to_unlock += 2
 
-    if results[3] !=  6:
-        d4tv.set(str(dbag.get_face(results[3])))
-        die4.configure(background=dbag.face_colors[results[3]])
-    else:
-        d4tv.set(str(dbag.get_face(results[0])))
-        die4.configure(background=dbag.face_colors[results[0]])
+    if results[3] ==  6:
         dbag.set_locks(4, True)
+        die4.config(highlightbackground="#FF0000")
+    elif results[3] == 1:
+        num_to_unlock += 2
 
-    if results[4] !=  6:
-        d5tv.set(str(dbag.get_face(results[4])))
-        die5.configure(background=dbag.face_colors[results[4]])
-    else:
-        d5tv.set(str(dbag.get_face(results[0])))
-        die5.configure(background=dbag.face_colors[results[0]])
+    if results[4] ==  6:
         dbag.set_locks(5, True)
+        die5.config(highlightbackground="#FF0000")
+    elif results[4] == 1:
+        num_to_unlock += 2
+
+    unlock_sixes(num_to_unlock)
 
     print(dbag.get_locks())
     print(results)
