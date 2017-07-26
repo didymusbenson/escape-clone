@@ -239,26 +239,12 @@ def roll_dice():
 
 
 def reset_sixes():
-    if dbag.get_d_roll(0) == 6:
-        d1tv.set(str(dbag.get_face(0)))
-        dbag.set_d_roll(1, 0)
-        die1.configure(background=dbag.face_colors[0], fg="#000000")
-    if dbag.get_d_roll(1) == 6:
-        d2tv.set(str(dbag.get_face(0)))
-        dbag.set_d_roll(2, 0)
-        die2.configure(background=dbag.face_colors[0], fg="#000000")
-    if dbag.get_d_roll(2) == 6:
-        d3tv.set(str(dbag.get_face(0)))
-        dbag.set_d_roll(3, 0)
-        die3.configure(background=dbag.face_colors[0], fg="#000000")
-    if dbag.get_d_roll(3) == 6:
-        d4tv.set(str(dbag.get_face(0)))
-        dbag.set_d_roll(4, 0)
-        die4.configure(background=dbag.face_colors[0], fg="#000000")
-    if dbag.get_d_roll(4) == 6:
-        d5tv.set(str(dbag.get_face(0)))
-        dbag.set_d_roll(5, 0)
-        die5.configure(background=dbag.face_colors[0], fg="#000000")
+    for i in  range(5):
+        if dbag.get_d_roll(i) == 6:
+            exec("d%stv.set(str(dbag.get_face(0)))" % (i + 1))
+            exec("dbag.set_d_roll(%s, 0)" % (i + 1))
+            exec("die%s.configure(background=dbag.face_colors[0], fg='#000000')  " % (i + 1) )
+
 
 def reset_dice():
     for i in range(5):
