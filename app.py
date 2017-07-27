@@ -17,10 +17,20 @@ w.pack(expand = YES, fill = BOTH)
 # Confugre lets you mess with settings, change stuff
 w.configure(background='#0076c6')
 
+top_frame = Frame(w, height=100, background = '#0076c6')
+top_frame.pack(fill=X, padx=5,pady=10)
+
+game_frame = Frame(w, height = 560, background = '#ffffaf')
+game_frame.pack(fill=X, padx=10)
+
 # CREATE A CLOCK LABEL AND ADD TO CANVAS
-clock = Label( w, text = "CLOCK" )
-clock.pack()
-w.create_window(110,60, window = clock, width = 200, height = 100)
+clock_frame = Frame(top_frame, width = 350)
+clock_frame.pack_propagate(0)
+clock_frame.pack(side=LEFT, padx=5, fill=Y)
+
+clock = Label( clock_frame, text = "CLOCK")
+clock.pack(fill=BOTH)
+
 
 # CREATE A GEM POOL CLASS THAT CONTAINS THE GEM TOTAL
 # SERVES AS PRACTICE CREATING PY OBJECTS
@@ -47,9 +57,12 @@ gPool = make_gem_pool(20)
 # Create the text variable for the view
 gViewTV = StringVar()
 # Create the label
-gemView = Label( w, textvariable = gViewTV )
-gemView.pack()
-w.create_window(270, 60, window = gemView, width = 100, height = 100)
+gem_frame = Frame(top_frame, height=100, width = 100)
+gem_frame.pack_propagate(0)
+gem_frame.pack(side=LEFT, padx=5, fill=Y)
+
+gemView = Label( gem_frame, textvariable = gViewTV)
+gemView.pack(fill=BOTH)
 
 # Set the label to the current amount of gems
 gViewTV.set(str(gPool.get_gems()))
@@ -68,10 +81,11 @@ def remove_gem():
     else:
         print("no gems to remove")
 
-# Create the button, pack it, and make the window for it in the Canvas
-b1 = Button(w, text="REMOVE BATTERY", command=remove_gem)
-b1.pack()
-w.create_window(270, 130, window = b1, width = 100, height = 20)
+
+## DEBUGGING BUTTON TO TEST "REMOVE_GEM"
+#b1 = Button(w, text="REMOVE BATTERY", command=remove_gem)
+#b1.pack()
+#w.create_window(420, 130, window = b1, width = 100, height = 20)
 
 # define the method to add gems
 def add_gem():
@@ -86,14 +100,19 @@ def add_gem():
 
 ##########################################
 # CREATE A MESSAGE LABEL AND ADD TO CANVAS
-message = Label( w, text = "MESSAGE" )
-message.pack()
-w.create_window(560, 60, window = message, width = 460, height = 100)
+m_frame = Frame(top_frame, height=100, width = 460)
+m_frame.pack_propagate(0)
+m_frame.pack(side=RIGHT, padx=5,fill=Y)
+message = Label( m_frame, text = "MESSAGE" )
+message.pack(fill=BOTH)
+
+
 
 # CREATE A DICE POOL LABEL AND ADD TO CANVAS
 dicepool = Canvas( w )
-dicepool.pack()
-w.create_window(400, 580, window = dicepool, width = 780, height = 100)
+dicepool.config(width = 780, height = 100)
+dicepool.pack(side= BOTTOM, fill=X, padx=10, pady=10)
+
 
 
 def swap_lock(n):
@@ -260,19 +279,27 @@ def turn_of_fate():
 
 ######################################################################
 # DIE POOL BUTTONS!
-b3 = Button(dicepool, text="ROLL DICE", command = roll_dice)
-b3.pack()
-dicepool.create_window(710, 20, window = b3, width = 100, height = 20)
+pool_frame = Frame(dicepool, height=100, width = 120)
+pool_frame.pack_propagate(0)
+pool_frame.pack(side=RIGHT)
 
-b4 = Button(dicepool, text="TURN OF FATE", command = turn_of_fate)
-b4.pack()
-dicepool.create_window(710, 50, window = b4, width = 100, height = 20)
+b3 = Button(pool_frame, text="ROLL DICE", command = roll_dice)
+b3.pack(fill=X, padx = 10, pady=5)
+
+
+b4 = Button(pool_frame, text="TURN OF FATE", command = turn_of_fate)
+b4.pack(fill=X, padx = 10, pady=5)
+
 
 # DEBUGGER BUTTON TO RESET DICE
-b5 = Button(dicepool, text="RESET DICE", command = reset_dice)
-b5.pack()
-dicepool.create_window(710, 80, window = b5, width = 100, height = 20)
+b5 = Button(pool_frame, text="RESET DICE", command = reset_dice)
+b5.pack(fill=X, padx = 10, pady=5)
 
 
-# MAKE THE MAGIC HAPPEN!
+
+###########################################################
+# LET'S GET THIS SHOW ON THE ROAD!
+master.update()
+# Set the minimum window size so players can't shrink it.
+master.minsize(master.winfo_width(),master.winfo_height())
 mainloop()
