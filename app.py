@@ -20,8 +20,20 @@ w.configure(background='#0076c6')
 top_frame = Frame(w, height=100, background = '#0076c6')
 top_frame.pack(fill=X, padx=5,pady=10)
 
-game_frame = Frame(w, height = 560, background = '#ffffaf')
+game_frame = Frame(w, height = 560, background = '#000000')
 game_frame.pack(fill=X, padx=10)
+
+
+board_area = Canvas(game_frame,  background = '#ffffaf', width=1000, height=1000)
+board_area.pack(fill=BOTH, expand = NO)
+board_area.create_rectangle(-100,-100,100,100,fill="black")
+def scroll_start(event):
+    board_area.scan_mark(event.x, event.y)
+
+def scroll_move(event):
+    board_area.scan_dragto(event.x, event.y, gain=1)
+board_area.bind("<ButtonPress-1>", scroll_start)
+board_area.bind("<B1-Motion>", scroll_move)
 
 # CREATE A CLOCK LABEL AND ADD TO CANVAS
 clock_frame = Frame(top_frame, width = 350)
@@ -30,6 +42,7 @@ clock_frame.pack(side=LEFT, padx=5, fill=Y)
 
 clock = Label( clock_frame, text = "CLOCK")
 clock.pack(fill=BOTH)
+
 
 
 # CREATE A GEM POOL CLASS THAT CONTAINS THE GEM TOTAL
@@ -112,7 +125,6 @@ message.pack(fill=BOTH)
 dicepool = Canvas( w )
 dicepool.config(width = 780, height = 100)
 dicepool.pack(side= BOTTOM, fill=X, padx=10, pady=10)
-
 
 
 def swap_lock(n):
