@@ -22,11 +22,13 @@ top_frame.pack(fill=X, padx=5,pady=10)
 
 game_frame = Frame(w, height = 560, background = '#000000')
 game_frame.pack(fill=X, padx=10)
-
+game_frame.pack_propagate(0)
 
 board_area = Canvas(game_frame,  background = '#ffffaf', width=1000, height=1000)
 board_area.pack(fill=BOTH, expand = NO)
-board_area.create_rectangle(-100,-100,100,100,fill="black")
+board_area.create_rectangle(375,250,475,350,fill="black")
+
+
 def scroll_start(event):
     board_area.scan_mark(event.x, event.y)
 
@@ -35,6 +37,14 @@ def scroll_move(event):
 board_area.bind("<ButtonPress-1>", scroll_start)
 board_area.bind("<B1-Motion>", scroll_move)
 
+def zoomer(event):
+    if (event.delta > 0):
+        board_area.scale("all", event.x, event.y, 1.1, 1.1)
+    elif (event.delta < 0):
+        board_area.scale("all", event.x, event.y, 0.9, 0.9)
+    board_area.configure(scrollregion = board_area.bbox("all"))
+
+board_area.bind("<MouseWheel>", zoomer)
 # CREATE A CLOCK LABEL AND ADD TO CANVAS
 clock_frame = Frame(top_frame, width = 350)
 clock_frame.pack_propagate(0)
@@ -306,7 +316,6 @@ b4.pack(fill=X, padx = 10, pady=5)
 # DEBUGGER BUTTON TO RESET DICE
 b5 = Button(pool_frame, text="RESET DICE", command = reset_dice)
 b5.pack(fill=X, padx = 10, pady=5)
-
 
 
 ###########################################################
