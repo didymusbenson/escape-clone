@@ -21,7 +21,7 @@ top_frame = Frame(w, height=100, background = '#0076c6')
 top_frame.pack(fill=X, padx=5,pady=10)
 
 game_frame = Frame(w, height = 560, background = '#000000')
-game_frame.pack(fill=X, padx=10)
+game_frame.pack(fill=BOTH, padx=10)
 game_frame.pack_propagate(0)
 
 board_area = Canvas(game_frame,  background = '#ffffaf', width=1000, height=1000)
@@ -166,7 +166,7 @@ def swap_lock(n):
         elif (locklist[n] == False and rolls[n] != 6):
             locklist[n] = True
 
-    dbag.set_locks(n + 1, locklist[n])
+    dbag.set_locks(n , locklist[n])
 
 
 for i in range(5):
@@ -193,57 +193,66 @@ class dice_bag(object):
         except:
             print('Error getting die face.')
 
-    d1lock = False
-    d2lock = False
-    d3lock = False
-    d4lock = False
-    d5lock = False
+    dlocks = [False,False,False,False,False]
 
-    d1roll = 0
-    d2roll = 0
-    d3roll = 0
-    d4roll = 0
-    d5roll = 0
+#    d1lock = False
+#    d2lock = False
+#    d3lock = False
+#    d4lock = False
+#    d5lock = False
+
+    drolls = [0,0,0,0,0]
+
+#    d1roll = 0
+#    d2roll = 0
+#    d3roll = 0
+#    d4roll = 0
+#    d5roll = 0
 
     def get_locks(self):
-        return [self.d1lock, self.d2lock, self.d3lock, self.d4lock, self.d5lock]
+        return self.dlocks
 
     def set_locks(self, dnum, tf_bool):
-        if dnum == 1:
-            self.d1lock = tf_bool
-        elif dnum == 2:
-            self.d2lock = tf_bool
-        elif dnum == 3:
-            self.d3lock = tf_bool
-        elif dnum == 4:
-            self.d4lock = tf_bool
-        elif dnum == 5:
-            self.d5lock = tf_bool
-        else:
-            print("Error setting die locks!")
+        self.dlocks[dnum] = tf_bool
+
+#        if dnum == 1:
+#            self.d1lock = tf_bool
+#        elif dnum == 2:
+#            self.d2lock = tf_bool
+#        elif dnum == 3:
+#            self.d3lock = tf_bool
+#        elif dnum == 4:
+#            self.d4lock = tf_bool
+#        elif dnum == 5:
+#            self.d5lock = tf_bool
+#        else:
+#            print("Error setting die locks!")
 
     def get_rolls(self):
-        return [self.d1roll, self.d2roll, self.d3roll, self.d4roll, self.d5roll]
+        return self.drolls
 
     def get_d_roll(self, dnum):
-        if dnum == 0:
-            return self.d1roll
-        elif dnum == 1:
-            return self.d2roll
-        elif dnum == 2:
-            return self.d3roll
-        elif dnum == 3:
-            return self.d4roll
-        elif dnum == 4:
-            return self.d5roll
-        else:
-            print("Error getting die roll!")
+        return self.drolls[dnum]
+#        if dnum == 0:
+#            return self.d1roll
+#        elif dnum == 1:
+#            return self.d2roll
+#        elif dnum == 2:
+#            return self.d3roll
+#        elif dnum == 3:
+#            return self.d4roll
+#        elif dnum == 4:
+#            return self.d5roll
+#        else:
+#            print("Error getting die roll!")
 
     def set_d_roll(self, dnum, roll):
         # original version of this had error handling, this does not.
-        for i in range(5):
-            if i + 1 == dnum:
-                exec("self.d%sroll= roll" % (i + 1))
+        self.drolls[dnum] = roll
+
+#        for i in range(5):
+#            if i + 1 == dnum:
+#                exec("self.d%sroll= roll" % (i + 1))
 
 dbag = dice_bag()
 
@@ -253,13 +262,13 @@ def unlock_sixes(n):
     unlocked = 0
     for i in range(len(locklist)):
         if (locklist[i] == True and rolls[i] == 6 and unlocked < n):
-            rolls[i] = 0
+            rolls[i] = 6
             locklist[i] = False
             unlocked += 1
 
     for i in range(5):
         if locklist[i] == False:
-            dbag.set_locks(i + 1, False)
+            dbag.set_locks(i, False)
             exec("die%s.config(highlightbackground='#000000')" % (i + 1))
 
 def roll_die():
@@ -278,12 +287,12 @@ def roll_dice():
 
     for i in range(5):
         exec("d%stv.set(str(dbag.get_face(results[%s])))" % (i + 1, i))
-        exec("dbag.set_d_roll(%s, results[%s])" % (i + 1, i))
+        exec("dbag.set_d_roll(%s, results[%s])" % (i, i))
         exec("die%s.configure(background=dbag.face_colors[results[%s]], fg='#000000')" % (i + 1, i))
 
     for i in range(5):
         if results[i] ==  6:
-            exec("dbag.set_locks(%s, True)" % (i +1))
+            exec("dbag.set_locks(%s, True)" % (i))
             exec("die%s.configure(fg='#FFFFFF')" % (i + 1))
         elif results[i] == 1 :
             num_to_unlock += 2
@@ -298,16 +307,18 @@ def roll_dice():
 def reset_sixes():
     for i in  range(5):
         if dbag.get_d_roll(i) == 6:
+            #print("6 found")
             exec("d%stv.set(str(dbag.get_face(0)))" % (i + 1))
-            exec("dbag.set_d_roll(%s, 0)" % (i + 1))
+            exec("dbag.set_d_roll(%s, 0)" % (i ))
             exec("die%s.configure(background=dbag.face_colors[0], fg='#000000')  " % (i + 1) )
+
 
 
 def reset_dice():
     for i in range(5):
-        dbag.set_locks(i + 1, False)
+        dbag.set_locks(i , False)
         exec("d%stv.set(str(dbag.get_face(0)))" % (i + 1))
-        exec("dbag.set_d_roll(%s, 0)" % (i + 1))
+        exec("dbag.set_d_roll(%s, 0)" % (i))
         exec("die%s.configure(background=dbag.face_colors[0], fg='#000000')" % (i + 1))
 
 def turn_of_fate():
