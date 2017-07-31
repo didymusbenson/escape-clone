@@ -26,6 +26,7 @@ game_frame.pack_propagate(0)
 
 board_area = Canvas(game_frame,  background = '#ffffaf', width=1000, height=1000)
 board_area.pack(fill=BOTH, expand = NO)
+
 board_area.create_rectangle(375,250,475,350,fill="black")
 
 
@@ -37,10 +38,25 @@ def scroll_move(event):
 board_area.bind("<ButtonPress-1>", scroll_start)
 board_area.bind("<B1-Motion>", scroll_move)
 
+class zoom_control(object):
+    zoomy = 1
+    def get_zoomy(self):
+        return self.zoomy
+
+    def set_zoomy(self, n):
+        if n > 0:
+            self.zoomy = n
+        else:
+            "Error setting zoomy"
+
+zc = zoom_control()
+
 def zoomer(event):
-    if (event.delta > 0):
+    if (event.delta > 0 and zc.get_zoomy() < 2):
+        zc.set_zoomy(zc.get_zoomy() * 1.1)
         board_area.scale("all", event.x, event.y, 1.1, 1.1)
-    elif (event.delta < 0):
+    elif (event.delta < 0 and zc.get_zoomy() > .5):
+        zc.set_zoomy(zc.get_zoomy() * 0.9)
         board_area.scale("all", event.x, event.y, 0.9, 0.9)
     board_area.configure(scrollregion = board_area.bbox("all"))
 
